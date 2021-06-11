@@ -1,0 +1,154 @@
+taskKey="com.codegym.task.task31.task3110.big08"\n\nArchiver (part 8)
+
+
+To find out which command the user currently wants to execute, let's add an Operation
+askOperation() method to the Archiver class. This method should display a list of available commands and
+ask the user to choose one of them. For convenience, we will ask the user to enter the command's number, which is its
+ordinal number in the Operation enum. You can get an enum field's ordinal number
+using the ordinal() method.
+Now everything is ready to rewrite the main method using our latest scientific advancements, specifically
+the CommandExecutor class and the askOperation() method.
+1.	Add a public static Operation askOperation() throws IOException method to the Archiver class.
+It must:
+1.1. Use the ConsoleHelper class's methods
+1.2. Ask the user for the number of the desired operation. Hint:
+To display the number of the "Create archive" operation, use: Operation.CREATE.ordinal()
+1.3. Return the selected operation.
+Example output of the askOperation() method:
+Select an operation:
+0 - Zip files into an archive
+1 - Add a file to an archive
+2 - Remove a file from an archive
+3 - Extract an archive
+4 - View the contents of an archive
+5 - Exit
+2.	Rewrite the main() method:
+2.1. Declare a local Operation variable
+2.2. In a loop, use the askOperation() method to ask for a new value for the variable in step 2.1, and
+use CommandExecutor.execute() to perform the operation.
+2.3. Allow the user to exit the loop by selecting the Operation.EXIT operation
+2.4. Wrap the askOperation() and execute(operation) calls in a try-catch block. If a
+NoSuchZipFileException occurs, use ConsoleHelper to display "You didn't select an archive or
+you selected an invalid file." If any other exceptions occur,
+display "An error occurred. Please check the entered data."
+2.5. Be sure that the program continues running (continues to a new iteration of the loop)
+after handling exceptions.
+3.	Run the program and verify that the "exit" command works.
+
+
+Requirements:
+1.	You need to create a public static Operation askOperation() method in the Archiver class.
+2.	The askOperation method should display all of the possible operations and their numbers.
+3.	The askOperation method should read the selected operation&#39;s number from the keyboard and return it.
+4.	Rewrite the main method according to the task conditions.
+
+
+Archiver (part 7)
+
+
+We've done a lot and can take a quick break.
+Let's create an exception package and add two classes to it: PathNotFoundException and NoSuchZipFileException.
+We'll throw a PathNotFoundException exception if we can't find the path needed
+to extract the archive, or the path to the file you want to zip, or any other path. A NoSuchZipFileException
+will be thrown if there is an attempt to do something with an archive that doesn't
+exist.
+1.	Create the exception package
+2.	Add to it a PathNotFoundException class that inherits Exception
+3.	Add a NoSuchZipFileException class that also inherits Exception
+
+
+
+Archiver (part 6)
+
+
+Suppose the user uses the Operation operation variable to let us know what he or she wants
+to do. Then we need to check the variable, create a corresponding
+command object, and call its execute() method. To avoid creating the required command object
+every time, we need to store it somewhere. Let's create a CommandExecutor class for this. We'll give it
+just one public static execute(Operation operation) method, which will find
+the required command and call its execute method.
+1.	Create a CommandExecutor class. It should be located at the root of the task. Don't add it to the command package.
+2.	Prevent direct calls to the class's constructor
+3.	Add a private static constant Map<Operation, Command> allKnownCommandsMap to the class to
+store the commands.
+4.	Initialize the allKnownCommandsMap field so that each field of the Operation enum
+corresponds to the correct command.
+5.	Implement the public static execute(Operation operation) throws Exception method, which
+must select the required command from allKnownCommandsMap and call its execute method.
+Whether or not you realized it, you just implemented the command pattern!
+
+
+
+Archiver (part 5)
+
+
+Let's divide the commands into two types: those that work directly with the archive, and helpers
+(for example, EXIT). All the commands of the first type will have shared functionality. It's convenient to pull this functionality
+into a common base class. Let's call this class ZipCommand. Like all command classes, it must
+implement the Command interface. All commands that work with an archive must
+inherit the ZipCommand class. We won't create any ZipCommand objects, so
+let's make it abstract.
+1.	Create an abstract ZipCommand class that implements the Command interface
+2.	Create a class for each command. All of the listed commands must
+inherit ZipCommand and have an empty execute() method. We'll write
+the implementation for each command separately as we implement our archiver.
+2.1. ZipCreateCommand is the command for creating an archive (zipping files into an archive)
+2.2. ZipContentCommand is the command for viewing an archive's contents
+2.3. ZipExtractCommand is the command for extracting an archive
+2.4. ZipAddCommand is the command for adding a file to an archive
+2.5. ZipRemoveCommand is the command for removing a file from an archive
+
+
+
+Archiver (part 4)
+
+
+Each command implies the execution of some action. Create a Command interface with
+an execute() method.  We'll create a separate class
+for each command. All of the command classes must implement (inherit) the Command interface.
+Since there will be a lot of commands, we'll create a separate command package for them. We'll store all of the command-related
+interfaces and implementations in it.
+The simplest command is EXIT, so let's start with that.
+1.	Create the command package
+2.	Declare the Command interface in it
+3.	Add a void execute() throws Exception method to the Command interface
+4.	Declare an ExitCommand class that implements the Command interface
+5.	Implement the execute() method in the ExitCommand class. It should use the ConsoleHelper class to display
+"Bye!"
+6.	At the very end of the Archiver class's main method, add code that creates an
+ExitCommand object and calls its execute() method
+7.	Check that it all works
+Note that all the project files must be encoded in UTF-8. You can set the encoding in IntelliJ IDEA
+under Settings -> Editor -> File Encodings. Be sure that all three fields responsible for encoding
+are set to UTF-8.
+
+
+
+Archiver (part 3)
+
+
+As you can see, zipping isn't that bad. But our archiver is somehow
+too primitive. A real archiver should be able to do much more: extract an archive,
+add a new file to an existing archive, remove a file from an archive, and view the contents
+of an archive. Now let's improve our archiver. To do that, we have to write a few new
+classes. First, let's create an Operation enum, which will contain all the commands that
+our archiver supports.
+It would also be convenient to use ConsoleHelper to work with the console so that everything console-related
+is gathered into the same class. Going forward, unless indicated otherwise, all input and output
+should happen through ConsoleHelper.
+1.	Declare the Operation enum, and add the following commands to it:
+1.1. CREATE - Create an archive
+1.2. ADD - Add a file to an archive
+1.3. REMOVE - Remove a file from an archive
+1.4. EXTRACT - Extract an archive's contents
+1.5. CONTENT - View an archive's contents
+1.6. EXIT - Exit the program
+2.	Create a ConsoleHelper class and implement the following static public methods in it:
+2.1. void writeMessage(String message) - Display a message on the console
+2.2. String readString() - Read a String from the console
+2.3. int readInt() - Read a number from the console
+Methods that read from the console can throw an IOException if an input error occurs. Account for
+this in their declarations.
+
+
+

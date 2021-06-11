@@ -1,0 +1,15 @@
+﻿#############
+## Idea
+#############
+target/
+.idea/
+.idea
+*.iml
+*.class
+*.dat
+*.name
+/out/
+/CodeGymPlugin.properties
+/Instruction.png
+/out.log
+/out.log.*
